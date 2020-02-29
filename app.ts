@@ -9,14 +9,17 @@ import { todoRouter } from './routes';
 (async () => {
   const app: Application = express();
 
-  app.use(logger('dev'));
+  dotenv.config();
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  if (process.env.NODE_ENV === 'development') {
+    app.use(logger('dev'));
+  }
 
   app.use('/api/v1/todos', todoRouter);
 
-  dotenv.config();
   await connectDB();
 
   const PORT = process.env.PORT || 3000;
