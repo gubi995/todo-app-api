@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const MONGO_CONFIG = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 };
 
 const connectDB = async () => {
