@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import Todo from '../models/Todo';
-import { responseErrorHandler, todoNotFoundError } from '../shared/error-handlers';
+import { Todo } from '../models';
+import { responseErrorHandler, todoNotFoundError } from '../shared';
 
 export const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {

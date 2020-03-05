@@ -1,8 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 
 import { getTodos, getTodo, createTodo, updateTodo, deleteTodo } from '../controllers/todos';
 
-const router = express.Router();
+const router = Router();
 
 router
   .route('/')

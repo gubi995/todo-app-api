@@ -4,7 +4,7 @@ import logger from 'morgan';
 import dotenv from 'dotenv';
 
 import connectDB from './db';
-import { todoRouter } from './routes';
+import { todosRouter, authRouter } from './routes';
 
 (async () => {
   const app: Application = express();
@@ -18,7 +18,8 @@ import { todoRouter } from './routes';
     app.use(logger('dev'));
   }
 
-  app.use('/api/v1/todos', todoRouter);
+  app.use('/api/v1/todos', todosRouter);
+  app.use('/auth', authRouter);
 
   await connectDB();
 
