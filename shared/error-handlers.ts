@@ -11,6 +11,7 @@ import {
   INVALID_REFRESH_TOKEN_ERROR_MSG,
   MISSING_PAYLOAD_ERROR_MSG,
   JWT_ERROR,
+  TOKEN_EXPIRED_ERROR,
 } from './error-constants';
 
 export const responseErrorHandler = (res: Response, err: any) => {
@@ -23,12 +24,12 @@ export const responseErrorHandler = (res: Response, err: any) => {
 
       return res.status(400).json({ data: null, error: errorMessages });
     }
+    case JWT_ERROR:
+    case TOKEN_EXPIRED_ERROR:
     case CAST_ERROR: {
       return res.status(400).json({ data: null, error: err.message });
     }
-    case JWT_ERROR: {
-      return res.status(400).json({ data: null, error: err.message });
-    }
+
     default: {
       return res.status(500).json({ data: null, error: INTERNAL_SERVER_ERROR_MSG });
     }
