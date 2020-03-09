@@ -10,6 +10,7 @@ import {
   EMAIL_RESERVED_ERROR_MSG,
   INVALID_REFRESH_TOKEN_ERROR_MSG,
   MISSING_PAYLOAD_ERROR_MSG,
+  JWT_ERROR,
 } from './error-constants';
 
 export const responseErrorHandler = (res: Response, err: any) => {
@@ -23,6 +24,9 @@ export const responseErrorHandler = (res: Response, err: any) => {
       return res.status(400).json({ data: null, error: errorMessages });
     }
     case CAST_ERROR: {
+      return res.status(400).json({ data: null, error: err.message });
+    }
+    case JWT_ERROR: {
       return res.status(400).json({ data: null, error: err.message });
     }
     default: {
@@ -44,6 +48,4 @@ export const invalidRefreshTokenError = (res: Response) =>
   res.status(400).json({ data: null, error: INVALID_REFRESH_TOKEN_ERROR_MSG });
 
 export const missingPayloadError = (res: Response, fields: {}) =>
-  res
-    .status(400)
-    .json({ data: null, error: `${MISSING_PAYLOAD_ERROR_MSG}: ${Object.keys(fields).join(', ')}` });
+  res.status(400).json({ data: null, error: `${MISSING_PAYLOAD_ERROR_MSG}: ${Object.keys(fields).join(', ')}` });

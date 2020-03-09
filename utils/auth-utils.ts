@@ -18,10 +18,14 @@ export const createAccessAndRefreshTokens = (
   return { accessToken, refreshToken };
 };
 
-export const decodeRefreshToken = (refreshToken: string) => verify(refreshToken, process.env.JWT_SECRET_RT!);
+export const decodeRefreshToken = (refreshToken: string) => {
+  const userFromToken = verify(refreshToken, process.env.JWT_SECRET_RT!) as any;
+
+  return userFromToken.id;
+};
 
 export const sendRefreshAndAccessToken = (accessToken: string, refreshToken: string, res: Response) =>
   res
     .status(200)
-    .cookie(REFRESH_TOKEN_KEY, refreshToken, { httpOnly: true, secure: true })
+    .cookie(REFRESH_TOKEN_KEY, refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' })
     .json({ accessToken, refreshToken, tokenExpireIn: ACCESS_TOKEN_EXPIRATION });
