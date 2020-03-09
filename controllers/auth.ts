@@ -11,7 +11,7 @@ import {
   REFRESH_TOKEN_KEY,
   missingPayloadError,
 } from '../shared';
-import { decodeRefreshToken, sendRefreshAndAccessToken } from '../utils/auth-utils';
+import { decodeRefreshToken, sendUserDataWithCredentials } from '../utils/auth-utils';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,7 +38,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     user.refreshToken = refreshToken;
     await user.save();
 
-    return sendRefreshAndAccessToken(accessToken, refreshToken, res);
+    const userWithCredentials = { accessToken, refreshToken, email: user.email };
+
+    return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
     return responseErrorHandler(res, err);
   }
@@ -67,7 +69,9 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
 
     await newUser.save();
 
-    return sendRefreshAndAccessToken(accessToken, refreshToken, res);
+    const userWithCredentials = { accessToken, refreshToken, email: newUser.email };
+
+    return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
     return responseErrorHandler(res, err);
   }
@@ -88,7 +92,9 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
           user.email
         );
 
-        return sendRefreshAndAccessToken(newAccessToken, newRefreshToken, res);
+        const userWithCredentials = { accessToken: newAccessToken, refreshToken: newRefreshToken, email: user.email };
+
+        return sendUserDataWithCredentials(userWithCredentials, res);
       }
     }
 
