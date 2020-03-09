@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import connectDB from './db';
 import { todosRouter, authRouter } from './routes';
@@ -14,6 +15,7 @@ import { todosRouter, authRouter } from './routes';
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  app.use(cors());
   if (process.env.NODE_ENV === 'development') {
     app.use(logger('dev'));
   }
