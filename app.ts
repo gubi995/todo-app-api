@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import connectDB from './db';
 import { todosRouter, authRouter } from './routes';
+import { CORS_CONFIG } from './config';
 
 (async () => {
   const app: Application = express();
@@ -15,7 +16,7 @@ import { todosRouter, authRouter } from './routes';
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(cors());
+  app.use(cors(CORS_CONFIG));
   if (process.env.NODE_ENV === 'development') {
     app.use(logger('dev'));
   }
