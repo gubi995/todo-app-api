@@ -92,6 +92,9 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
           user.email
         );
 
+        user.refreshToken = newRefreshToken;
+        await user.save();
+
         const userWithCredentials = { accessToken: newAccessToken, refreshToken: newRefreshToken, email: user.email };
 
         return sendUserDataWithCredentials(userWithCredentials, res);
