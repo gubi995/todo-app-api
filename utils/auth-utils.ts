@@ -28,5 +28,8 @@ export const decodeRefreshToken = (refreshToken: string) => {
 export const sendUserDataWithCredentials = ({ accessToken, refreshToken, email }: UserWithCredentials, res: Response) =>
   res
     .status(200)
-    .cookie(REFRESH_TOKEN_KEY, refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' })
-    .json({ data: { accessToken, refreshToken, email, tokenExpiryInSec: ACCESS_TOKEN_EXPIRY_IN_SEC } });
+    .cookie(REFRESH_TOKEN_KEY, refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    })
+    .json({ accessToken, refreshToken, email, tokenExpiryInSec: ACCESS_TOKEN_EXPIRY_IN_SEC });

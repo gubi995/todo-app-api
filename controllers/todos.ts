@@ -6,8 +6,9 @@ import { responseErrorHandler, todoNotFoundError } from '../shared';
 export const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const todos = await Todo.find();
+    const todosForClient = todos.map((todo) => todo.toObject());
 
-    return res.status(200).json({ data: todos });
+    return res.status(200).json(todosForClient);
   } catch (err) {
     return responseErrorHandler(res, err);
   }
@@ -22,7 +23,7 @@ export const getTodo = async (req: Request, res: Response, next: NextFunction) =
       return todoNotFoundError(res, todoId);
     }
 
-    return res.status(200).json({ data: todo });
+    return res.status(200).json(todo.toObject());
   } catch (err) {
     return responseErrorHandler(res, err);
   }
@@ -30,9 +31,9 @@ export const getTodo = async (req: Request, res: Response, next: NextFunction) =
 
 export const createTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todos = await Todo.create(req.body);
+    const todo = await Todo.create(req.body);
 
-    return res.status(200).json({ data: todos });
+    return res.status(200).json(todo.toObject());
   } catch (err) {
     return responseErrorHandler(res, err);
   }
@@ -48,7 +49,7 @@ export const updateTodo = async (req: Request, res: Response, next: NextFunction
       return todoNotFoundError(res, todoId);
     }
 
-    return res.status(200).json({ data: todo });
+    return res.status(200).json(todo.toObject());
   } catch (err) {
     return responseErrorHandler(res, err);
   }

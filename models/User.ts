@@ -1,5 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
+import { MONGOOSE_CONFIG } from '../config';
+
 export interface IUser extends Document {
   username: string;
   email: string;
@@ -34,6 +36,8 @@ const UserSchema = new Schema({
     trim: true,
   },
 });
+
+UserSchema.set('toObject', MONGOOSE_CONFIG);
 
 const userModel = model<IUser>('User', UserSchema);
 

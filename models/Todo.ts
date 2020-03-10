@@ -1,5 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
+import { MONGOOSE_CONFIG } from '../config';
+
 export interface ITodo extends Document {
   title: string;
   completed: boolean;
@@ -63,6 +65,8 @@ const TodoSchema = new Schema({
     },
   ],
 });
+
+TodoSchema.set('toObject', MONGOOSE_CONFIG);
 
 const todoModel = model<ITodo>('Todo', TodoSchema);
 
