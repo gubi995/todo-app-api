@@ -1,6 +1,4 @@
-import { model, Schema, Document } from 'mongoose';
-
-import { MONGOOSE_CONFIG } from '../config';
+import { model, Schema, Document, DocumentToObjectOptions } from 'mongoose';
 
 export interface ITodo extends Document {
   title: string;
@@ -66,7 +64,19 @@ const TodoSchema = new Schema({
   ],
 });
 
-TodoSchema.set('toObject', MONGOOSE_CONFIG);
+const TO_OBJECT_OPTIONS: DocumentToObjectOptions = {
+  virtuals: true,
+  versionKey: false,
+  transform: (doc: any, ret: any) => {
+    const mongooseId = '_id';
+
+    delete ret[mongooseId];
+
+    return ret;
+  },
+};
+
+TodoSchema.set('toObject', TO_OBJECT_OPTIONS);
 
 const todoModel = model<ITodo>('Todo', TodoSchema);
 

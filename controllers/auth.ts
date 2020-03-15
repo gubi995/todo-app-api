@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     user.refreshToken = refreshToken;
     await user.save();
 
-    const userWithCredentials = { accessToken, refreshToken, email: user.email };
+    const userWithCredentials = { accessToken, refreshToken, user: user.toObject() };
 
     return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
@@ -69,7 +69,49 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
 
     await newUser.save();
 
-    const userWithCredentials = { accessToken, refreshToken, email: newUser.email };
+    const userWithCredentials = { accessToken, refreshToken, user: newUser.toObject() };
+
+    return sendUserDataWithCredentials(userWithCredentials, res);
+  } catch (err) {
+    return responseErrorHandler(res, err);
+  }
+};
+
+export const socialSighUp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, socialId, name, provider } = req.body;
+
+    if (!email || !socialId || !name || !provider) {
+      return missingPayloadError(res, { email, socialId, name, provider });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (user) {
+      if (user.socialId === socialId) {
+        const { accessToken, refreshToken } = createAccessAndRefreshTokens(user.id, user.email);
+
+        user.refreshToken = refreshToken;
+
+        await user.save();
+
+        const userWithCredentials = { accessToken, refreshToken, user: user.toObject() };
+
+        return sendUserDataWithCredentials(userWithCredentials, res);
+      }
+
+      return emailReservedError(res);
+    }
+
+    const newUser = await User.create({ email, name, provider, socialId, password: 'NO_PASSWORD_PROVIDED' });
+
+    const { accessToken, refreshToken } = createAccessAndRefreshTokens(newUser.id, newUser.email);
+
+    newUser.refreshToken = refreshToken;
+
+    await newUser.save();
+
+    const userWithCredentials = { accessToken, refreshToken, user: newUser.toObject() };
 
     return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
@@ -95,7 +137,11 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         user.refreshToken = newRefreshToken;
         await user.save();
 
-        const userWithCredentials = { accessToken: newAccessToken, refreshToken: newRefreshToken, email: user.email };
+        const userWithCredentials = {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          user: user.toObject(),
+        };
 
         return sendUserDataWithCredentials(userWithCredentials, res);
       }

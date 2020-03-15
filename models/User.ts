@@ -1,16 +1,16 @@
-import { model, Schema, Document } from 'mongoose';
-
-import { MONGOOSE_CONFIG } from '../config';
+import { model, Schema, Document, DocumentToObjectOptions } from 'mongoose';
 
 export interface IUser extends Document {
-  username: string;
+  name: string;
   email: string;
   password: string;
   refreshToken: string;
+  provider: string;
+  socialId: string;
 }
 
 const UserSchema = new Schema({
-  username: {
+  name: {
     type: String,
     trim: true,
   },
@@ -35,9 +35,30 @@ const UserSchema = new Schema({
     type: String,
     trim: true,
   },
+  provider: {
+    type: String,
+    trim: true,
+  },
+  socialId: {
+    type: String,
+    trim: true,
+  },
 });
 
-UserSchema.set('toObject', MONGOOSE_CONFIG);
+const TO_OBJECT_OPTIONS: DocumentToObjectOptions = {
+  virtuals: true,
+  versionKey: false,
+  transform: (doc: any, ret: any) => {
+    const mongooseId = '_id';
+
+    delete ret[mongooseId];
+    delete ret.password;
+
+    return ret;
+  },
+};
+
+UserSchema.set('toObject', TO_OBJECT_OPTIONS);
 
 const userModel = model<IUser>('User', UserSchema);
 

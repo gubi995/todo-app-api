@@ -1,5 +1,7 @@
+import { IUser } from '../models/User';
+
 export interface UserWithCredentials {
-  email: string;
+  user: IUser;
   accessToken: string;
   refreshToken: string;
 }
