@@ -1,8 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 
-import { responseErrorHandler } from '../shared';
-
 export default (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
@@ -16,6 +14,6 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
     return next();
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };

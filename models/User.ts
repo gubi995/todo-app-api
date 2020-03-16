@@ -53,6 +53,7 @@ const TO_OBJECT_OPTIONS: DocumentToObjectOptions = {
 
     delete ret[mongooseId];
     delete ret.password;
+    delete ret.refreshToken;
 
     return ret;
   },

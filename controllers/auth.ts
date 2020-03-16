@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 
 import { User } from '../models';
 import {
-  responseErrorHandler,
   createAccessAndRefreshTokens,
   invalidCredentialsError,
   emailReservedError,
@@ -42,7 +41,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
@@ -73,7 +72,7 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
 
     return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
@@ -115,7 +114,7 @@ export const socialSighUp = async (req: Request, res: Response, next: NextFuncti
 
     return sendUserDataWithCredentials(userWithCredentials, res);
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
@@ -149,6 +148,6 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
 
     return invalidRefreshTokenError(res);
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };

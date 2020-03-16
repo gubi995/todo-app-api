@@ -7,6 +7,7 @@ import cors from 'cors';
 import connectDB from './db';
 import { todosRouter, authRouter } from './routes';
 import { CORS_CONFIG } from './config';
+import { errorHandler, errorConverter } from './shared/error';
 
 (async () => {
   const app: Application = express();
@@ -21,8 +22,10 @@ import { CORS_CONFIG } from './config';
     app.use(logger('dev'));
   }
 
-  app.use('/api/v1/todos', todosRouter);
   app.use('/auth', authRouter);
+  app.use('/api/v1/todos', todosRouter);
+  app.use(errorConverter);
+  app.use(errorHandler);
 
   await connectDB();
 

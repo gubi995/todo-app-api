@@ -3,7 +3,13 @@ import { sign, verify } from 'jsonwebtoken';
 import { v4 as uuid4 } from 'uuid';
 
 import { ACCESS_TOKEN_EXPIRY_IN_SEC, REFRESH_TOKEN_EXPIRY_IN_SEC, REFRESH_TOKEN_KEY } from '../shared/auth-constants';
-import { UserWithCredentials } from '../shared/user-with-credentials';
+import { IUser } from '../models/User';
+
+export interface UserWithCredentials {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+}
 
 export const createAccessAndRefreshTokens = (
   userId: string,

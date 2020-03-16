@@ -1,71 +1,53 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { Todo } from '../models';
-import { responseErrorHandler, todoNotFoundError } from '../shared';
+import { TodoService } from '../services';
 
 export const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todos = await Todo.find();
-    const todosForClient = todos.map((todo) => todo.toObject());
+    const todos = await TodoService.getTodos();
 
-    return res.status(200).json(todosForClient);
+    return res.status(200).json(todos);
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
 export const getTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todoId = req.params.id;
-    const todo = await Todo.findOne({ _id: todoId });
-
-    if (!todo) {
-      return todoNotFoundError(res, todoId);
-    }
+    const todo = await TodoService.getTodo(req.params.id);
 
     return res.status(200).json(todo.toObject());
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
 export const createTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todo = await Todo.create(req.body);
+    const todo = await TodoService.createTodo(req.body);
 
     return res.status(200).json(todo.toObject());
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
 export const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todoId = req.params.id;
-    const updateInformation = req.body;
-    const todo = await Todo.findByIdAndUpdate(todoId, updateInformation, { new: true, runValidators: true });
-
-    if (!todo) {
-      return todoNotFoundError(res, todoId);
-    }
+    const todo = await TodoService.updateTodo(req.params.id, req.body);
 
     return res.status(200).json(todo.toObject());
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
 
 export const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const todoId = req.params.id;
-    const todo = await Todo.findOneAndDelete({ _id: todoId });
-
-    if (!todo) {
-      return todoNotFoundError(res, todoId);
-    }
+    await TodoService.deleteTodo(req.params.id);
 
     return res.status(204).send();
   } catch (err) {
-    return responseErrorHandler(res, err);
+    return next(err);
   }
 };
