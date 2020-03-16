@@ -1,8 +1,5 @@
-/* eslint-disable */
-
-import { Todo } from '../models';
-import { ITodo } from '../models/Todo';
-import { TodoNotFoundError } from '../shared/error';
+import { Todo, ITodo } from '../models';
+import { TodoNotFoundError } from '../shared';
 
 class TodoService {
   static async getTodos(): Promise<ITodo[]> {
@@ -22,12 +19,14 @@ class TodoService {
     return todo;
   }
 
-  static async createTodo(todo: ITodo): Promise<ITodo> {
-    return await Todo.create(todo);
+  static async createTodo(todoFields: ITodo): Promise<ITodo> {
+    const todo = await Todo.create(todoFields);
+
+    return todo;
   }
 
-  static async updateTodo(id: string, updatedFields: any): Promise<ITodo> {
-    const todo = await Todo.findByIdAndUpdate(id, updatedFields, { new: true, runValidators: true });
+  static async updateTodo(id: string, todoFields: any): Promise<ITodo> {
+    const todo = await Todo.findByIdAndUpdate(id, todoFields, { new: true, runValidators: true });
 
     if (!todo) {
       throw new TodoNotFoundError(id);
@@ -42,8 +41,6 @@ class TodoService {
     if (!todo) {
       throw new TodoNotFoundError(id);
     }
-
-    return;
   }
 }
 

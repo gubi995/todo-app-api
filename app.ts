@@ -7,7 +7,7 @@ import cors from 'cors';
 import connectDB from './db';
 import { todosRouter, authRouter } from './routes';
 import { CORS_CONFIG } from './config';
-import { errorHandler, errorConverter } from './shared/error';
+import { errorHandler, errorConverter } from './shared';
 
 (async () => {
   const app: Application = express();
