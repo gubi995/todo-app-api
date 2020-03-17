@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 
 import connectDB from './db';
 import { todosRouter, authRouter } from './routes';
@@ -17,6 +19,8 @@ import { errorHandler, errorConverter } from './shared';
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  app.use(helmet());
+  app.use(compression());
   app.use(cors(CORS_CONFIG));
   if (process.env.NODE_ENV === 'development') {
     app.use(logger('dev'));
