@@ -1,7 +1,7 @@
 import Joi from '@hapi/joi';
 
 const todoSchema = Joi.object({
-  body: {
+  body: Joi.object({
     title: Joi.string()
       .required()
       .min(5),
@@ -19,9 +19,9 @@ const todoSchema = Joi.object({
           .required()
           .min(5),
         completed: Joi.boolean().required(),
-      })
+      }).unknown(true)
     ),
-  },
-});
+  }).unknown(true),
+}).unknown(true);
 
 export { todoSchema };
