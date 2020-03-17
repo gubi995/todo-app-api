@@ -33,5 +33,6 @@ module.exports = {
     'no-param-reassign': 'off',
     'import/extensions': 'off',
     'import/no-unresolved': 'off',
+    'implicit-arrow-linebreak': 'off',
   },
 };

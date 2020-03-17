@@ -1,3 +1,4 @@
 import { todosRouter } from './todos';
+import { authRouter } from './auth';
 
-export { todosRouter as todoRouter };
+export { todosRouter, authRouter };
