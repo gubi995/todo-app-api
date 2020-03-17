@@ -20,9 +20,7 @@ class TodoService {
   }
 
   static async createTodo(todoFields: ITodo): Promise<ITodo> {
-    const todo = await Todo.create(todoFields);
-
-    return todo;
+    return Todo.create(todoFields);
   }
 
   static async updateTodo(id: string, todoFields: any): Promise<ITodo> {

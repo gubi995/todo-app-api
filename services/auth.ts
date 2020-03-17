@@ -31,12 +31,7 @@ class AuthService {
       throw new WrongCredentialsError();
     }
 
-    const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(user.id, user.email);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    return { accessToken, refreshToken, user: user.toObject() };
+    return this.getUserWithCredentials(user);
   }
 
   static async signUp(email: string, password: string): Promise<UserWithCredentials> {
@@ -49,13 +44,7 @@ class AuthService {
     const hashedPassword = await bcrypt.hash(password, +process.env.HASH_SALT_LENGTH!);
     const newUser = await User.create({ email, password: hashedPassword });
 
-    const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(newUser.id, newUser.email);
-
-    newUser.refreshToken = refreshToken;
-
-    await newUser.save();
-
-    return { accessToken, refreshToken, user: newUser.toObject() };
+    return this.getUserWithCredentials(newUser);
   }
 
   static async socialSignUp(
@@ -67,56 +56,44 @@ class AuthService {
     const user = await User.findOne({ email });
 
     if (user) {
-      if (user.socialId === socialId) {
-        const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(user.id, user.email);
-
-        user.refreshToken = refreshToken;
-
-        await user.save();
-
-        return { accessToken, refreshToken, user: user.toObject() };
+      if (user.socialId !== socialId) {
+        throw new EmailReservedError();
       }
 
-      throw new EmailReservedError();
+      return this.getUserWithCredentials(user);
     }
 
-    const newUser = await User.create({ email, name, provider, socialId, password: 'NO_PASSWORD_PROVIDED' });
+    const newUser = await User.create({ email, name, provider, socialId, password: 'NO_PASSWORD_NEEDED' });
 
-    const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(newUser.id, newUser.email);
-
-    newUser.refreshToken = refreshToken;
-
-    await newUser.save();
-
-    return { accessToken, refreshToken, user: newUser.toObject() };
+    return this.getUserWithCredentials(newUser);
   }
 
   static async refreshToken(
     refreshTokenFromHeader: string,
     refreshTokenFromCookie: string
   ): Promise<UserWithCredentials> {
-    if (refreshTokenFromHeader === refreshTokenFromCookie) {
-      const userId = this.decodeRefreshToken(refreshTokenFromHeader);
-      const user = await User.findById(userId);
-
-      if (user && user.refreshToken === refreshTokenFromCookie) {
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = this.createAccessAndRefreshTokens(
-          user.id,
-          user.email
-        );
-
-        user.refreshToken = newRefreshToken;
-        await user.save();
-
-        return {
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
-          user: user.toObject(),
-        };
-      }
+    if (refreshTokenFromHeader !== refreshTokenFromCookie) {
+      throw new InvalidRefreshTokenError();
     }
 
-    throw new InvalidRefreshTokenError();
+    const userId = this.decodeRefreshToken(refreshTokenFromHeader);
+    const user = await User.findById(userId);
+
+    if (!user || user.refreshToken !== refreshTokenFromCookie) {
+      throw new InvalidRefreshTokenError();
+    }
+
+    return this.getUserWithCredentials(user);
+  }
+
+  private static async getUserWithCredentials(user: IUser) {
+    const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(user.id, user.email);
+
+    user.refreshToken = refreshToken;
+
+    await user.save();
+
+    return { accessToken, refreshToken, user: user.toObject() };
   }
 
   private static createAccessAndRefreshTokens(
