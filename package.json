@@ -24,6 +24,7 @@
     "mongoose": "^5.9.2",
     "morgan": "~1.9.1",
     "ts-node": "^8.7.0",
+    "typescript": "^3.8.2",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
@@ -48,8 +49,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "nodemon": "^2.0.2",
-    "prettier": "^1.19.1",
-    "typescript": "^3.8.2"
+    "prettier": "^1.19.1"
   },
   "husky": {
     "hooks": {
