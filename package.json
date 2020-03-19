@@ -5,9 +5,9 @@
   "scripts": {
     "start": "ts-node app.ts",
     "dev": "nodemon --exec ts-node app.ts",
-    "format": "prettier --write ./*.ts && prettier --write ./**/*.ts",
-    "lint": "eslint ./*.ts && eslint ./**/*.ts",
-    "lint:fix": "eslint ./*.ts --fix && eslint ./**/*.ts --fix"
+    "format": "prettier --write src/*.ts && prettier --write src/**/*.ts",
+    "lint": "eslint src/*.ts && eslint src/**/*.ts",
+    "lint:fix": "eslint src/*.ts --fix && eslint src/**/*.ts --fix"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
