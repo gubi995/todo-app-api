@@ -86,7 +86,13 @@ class AuthService {
     return this.getUserWithCredentials(user);
   }
 
-  private static async getUserWithCredentials(user: IUser) {
+  static decodeAccessToken(accessToken: string): { id: string; email: string } {
+    const userFromToken = verify(accessToken, process.env.JWT_SECRET_AT!) as any;
+
+    return userFromToken;
+  }
+
+  private static async getUserWithCredentials(user: IUser): Promise<UserWithCredentials> {
     const { accessToken, refreshToken } = this.createAccessAndRefreshTokens(user.id, user.email);
 
     user.refreshToken = refreshToken;
@@ -96,10 +102,7 @@ class AuthService {
     return { accessToken, refreshToken, user: user.toObject() };
   }
 
-  private static createAccessAndRefreshTokens(
-    userId: string,
-    email: string
-  ): { accessToken: string; refreshToken: string } {
+  private static createAccessAndRefreshTokens(userId: string, email: string): Omit<UserWithCredentials, 'user'> {
     const accessToken = sign({ id: userId, email }, process.env.JWT_SECRET_AT!, {
       expiresIn: ACCESS_TOKEN_EXPIRY_IN_SEC,
     });
@@ -110,7 +113,7 @@ class AuthService {
     return { accessToken, refreshToken };
   }
 
-  private static decodeRefreshToken(refreshToken: string) {
+  private static decodeRefreshToken(refreshToken: string): string {
     const userFromToken = verify(refreshToken, process.env.JWT_SECRET_RT!) as any;
 
     return userFromToken.id;

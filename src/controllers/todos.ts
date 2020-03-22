@@ -1,10 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { TodoService } from '../services';
+import { TodoService, AuthService } from '../services';
+import { getAccessToken } from '../utils/auth';
 
 export const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const todos = await TodoService.getTodos();
+
+    return res.status(200).json(todos);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getMyTodos = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const accessToken = getAccessToken(req);
+    const { email } = AuthService.decodeAccessToken(accessToken);
+
+    const todos = await TodoService.getTodos({ 'assignee.email': email });
 
     return res.status(200).json(todos);
   } catch (err) {

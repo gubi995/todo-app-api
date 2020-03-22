@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getTodos, getTodo, createTodo, updateTodo, deleteTodo } from '../controllers/todos';
+import { getTodos, getMyTodos, getTodo, createTodo, updateTodo, deleteTodo } from '../controllers/todos';
 import { requestValidator, todoSchema } from '../validators';
 import authGuard from '../middlewares/auth-guard';
 
@@ -10,6 +10,8 @@ router
   .route('/')
   .get(authGuard, getTodos)
   .post(authGuard, requestValidator(todoSchema), createTodo);
+
+router.route('/my').get(authGuard, getMyTodos);
 
 router
   .route('/:id')

@@ -2,8 +2,8 @@ import { Todo, ITodo } from '../models';
 import { TodoNotFoundError } from '../shared';
 
 class TodoService {
-  static async getTodos(): Promise<ITodo[]> {
-    const todos = await Todo.find();
+  static async getTodos(criteria?: { [key: string]: any }): Promise<ITodo[]> {
+    const todos = criteria ? await Todo.find(criteria) : await Todo.find();
     const todosForClient = todos.map((todo) => todo.toObject());
 
     return todosForClient;
